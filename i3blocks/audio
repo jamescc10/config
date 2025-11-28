@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Get the current volume of the default sink
+get_volume() {
+    pactl list sinks | grep '^[[:space:]]Volume:' | \
+    head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,'
+}
+
+# Show volume
+show_volume() {
+    vol=$(get_volume)
+    mute_status=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo " (muted)" || echo "")
+    echo "${vol}%${mute_status}"
+}
+
+show_volume
